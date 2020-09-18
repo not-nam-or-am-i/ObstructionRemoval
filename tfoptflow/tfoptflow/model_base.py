@@ -79,11 +79,11 @@ class ModelBase:
             if self.dbg:
                 config.log_device_placement = True
             config.allow_soft_placement = True
-            self.sess = tf.Session(config=config)
+            self.sess = tf.compat.v1.Session(config=config)
         else:
             self.sess = sess
 
-        tf.logging.set_verbosity(tf.logging.INFO)
+        tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
 
     ###
     # Training-specific helpers
@@ -212,8 +212,8 @@ class ModelBase:
         """
         # Increase the batch size with the number of GPUs dedicated to computing TF ops
         batch_size = self.num_gpus * self.opts['batch_size']
-        self.x_tnsr = tf.placeholder(self.opts['x_dtype'], [batch_size] + self.opts['x_shape'], 'x_tnsr')
-        self.y_tnsr = tf.placeholder(self.opts['y_dtype'], [batch_size] + self.opts['y_shape'], 'y_tnsr')
+        self.x_tnsr = tf.compat.v1.placeholder(self.opts['x_dtype'], [batch_size] + self.opts['x_shape'], 'x_tnsr')
+        self.y_tnsr = tf.compat.v1.placeholder(self.opts['y_dtype'], [batch_size] + self.opts['y_shape'], 'y_tnsr')
 
     def build_graph(self):
         """ Build the complete graph in TensorFlow
