@@ -11,7 +11,7 @@ from warp_utils import dense_image_warp
 import cv2
 import glob
 
-config = tf.ConfigProto()
+config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
 
 FLAGS = tf.app.flags.FLAGS
@@ -116,7 +116,7 @@ def train():
             data_list_F0 = sorted(glob.glob(path))
             dataset_F0 = tf.data.Dataset.from_tensor_slices(tf.constant(data_list_F0))
             dataset_F0 = dataset_F0.apply(
-                tf.contrib.data.shuffle_and_repeat(buffer_size=21, count=None, seed=6)).map(
+                tf.data.experimental.shuffle_and_repeat(buffer_size=21, count=None, seed=6)).map(
                 _read_image_random_size).map(
                 lambda image: tf.random_crop(image, [CROP_PATCH_H, CROP_PATCH_W, 3], seed=6))
             dataset_F0 = dataset_F0.prefetch(16)
