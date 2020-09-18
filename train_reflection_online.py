@@ -57,7 +57,7 @@ nn_opts['flow_pred_lvl'] = 2
 
 
 def _read_image_random_size(filename):
-    image_string = tf.read_file(filename)
+    image_string = tf.io.read_file(filename)
     image_decoded = tf.image.decode_image(image_string, channels=3)
     # image_decoded.set_shape([256, 448, 3])
     return tf.cast(image_decoded, dtype=tf.float32) / 255.0
@@ -118,7 +118,7 @@ def train():
             dataset_F0 = dataset_F0.apply(
                 tf.data.experimental.shuffle_and_repeat(buffer_size=21, count=None, seed=6)).map(
                 _read_image_random_size).map(
-                lambda image: tf.random_crop(image, [CROP_PATCH_H, CROP_PATCH_W, 3], seed=6))
+                lambda image: tf.image.random_crop(image, [CROP_PATCH_H, CROP_PATCH_W, 3], seed=6))
             dataset_F0 = dataset_F0.prefetch(16)
             return dataset_F0
 
@@ -136,11 +136,11 @@ def train():
         dataset_online_I2 = get_online_data('tmp/' + FLAGS.training_scene + '*I2.png')
         dataset_online_I3 = get_online_data('tmp/' + FLAGS.training_scene + '*I3.png')
         dataset_online_I4 = get_online_data('tmp/' + FLAGS.training_scene + '*I4.png')
-        batch_online_I0 = dataset_online_I0.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I1 = dataset_online_I1.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I2 = dataset_online_I2.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I3 = dataset_online_I3.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I4 = dataset_online_I4.batch(FLAGS.batch_size).make_initializable_iterator()
+        batch_online_I0 = tf.compat.v1.data.make_initializable_iterator(dataset)dataset_online_I0.batch(FLAGS.batch_size))
+        batch_online_I1 = tf.compat.v1.data.make_initializable_iterator(dataset)dataset_online_I1.batch(FLAGS.batch_size))
+        batch_online_I2 = tf.compat.v1.data.make_initializable_iterator(dataset)dataset_online_I2.batch(FLAGS.batch_size))
+        batch_online_I3 = tf.compat.v1.data.make_initializable_iterator(dataset)dataset_online_I3.batch(FLAGS.batch_size))
+        batch_online_I4 = tf.compat.v1.data.make_initializable_iterator(dataset)dataset_online_I4.batch(FLAGS.batch_size))
         fused_frame0 = batch_online_I0.get_next()
         fused_frame1 = batch_online_I1.get_next()
         fused_frame2 = batch_online_I2.get_next()
