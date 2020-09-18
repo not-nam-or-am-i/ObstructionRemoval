@@ -62,10 +62,10 @@ class ImageReconstruction_reflection(object):
             registrated_foreground_23 = self.warp(image_3, flow23F, b, h, w, 3)
             registrated_foreground_24 = self.warp(image_4, flow24F, b, h, w, 3)
 
-            tf.summary.image('registrated_foreground_20_'+str(lvl), registrated_foreground_20, 3)
-            tf.summary.image('registrated_foreground_21_'+str(lvl), registrated_foreground_21, 3)
-            tf.summary.image('registrated_foreground_23_'+str(lvl), registrated_foreground_23, 3)
-            tf.summary.image('registrated_foreground_24_'+str(lvl), registrated_foreground_24, 3)
+            tf.compat.v1.summary.image('registrated_foreground_20_'+str(lvl), registrated_foreground_20, 3)
+            tf.compat.v1.summary.image('registrated_foreground_21_'+str(lvl), registrated_foreground_21, 3)
+            tf.compat.v1.summary.image('registrated_foreground_23_'+str(lvl), registrated_foreground_23, 3)
+            tf.compat.v1.summary.image('registrated_foreground_24_'+str(lvl), registrated_foreground_24, 3)
 
             outgoing_mask_20 = create_outgoing_mask(flow20F)
             outgoing_mask_21 = create_outgoing_mask(flow21F)
@@ -163,11 +163,11 @@ class ImageReconstruction_reflection(object):
         h = self.CROP_PATCH_H // (2 ** self.level)
         w = self.CROP_PATCH_W // (2 ** self.level)
 
-        I0 = tf.image.resize_bilinear(input_images[..., 0:3], (h, w))
-        I1 = tf.image.resize_bilinear(input_images[..., 3:6], (h, w))
-        I2 = tf.image.resize_bilinear(input_images[..., 6:9], (h, w))
-        I3 = tf.image.resize_bilinear(input_images[..., 9:12], (h, w))
-        I4 = tf.image.resize_bilinear(input_images[..., 12:15], (h, w))
+        I0 = tf.compat.v1.image.resize_bilinear(input_images[..., 0:3], (h, w))
+        I1 = tf.compat.v1.image.resize_bilinear(input_images[..., 3:6], (h, w))
+        I2 = tf.compat.v1.image.resize_bilinear(input_images[..., 6:9], (h, w))
+        I3 = tf.compat.v1.image.resize_bilinear(input_images[..., 9:12], (h, w))
+        I4 = tf.compat.v1.image.resize_bilinear(input_images[..., 12:15], (h, w))
 
 
         if self.level == 4:
@@ -382,9 +382,9 @@ class Decomposition_Net_Translation(object):
         return x
 
     def FeaturePyramidExtractor(self, x):
-        with tf.variable_scope("FeaturePyramidExtractor", reuse=tf.AUTO_REUSE):
+        with tf.compat.v1.variable_scope("FeaturePyramidExtractor", reuse=tf.compat.v1.AUTO_REUSE):
             for l in range(self.lvl):
-                x = tf.layers.Conv2D(self.filters[l], (3, 3), (2, 2), 'same')(x)
+                x = tf.compat.v1.layers.Conv2D(self.filters[l], (3, 3), (2, 2), 'same')(x)
                 x = tf.nn.leaky_relu(x, 0.1)
                 x = tf.layers.Conv2D(self.filters[l], (3, 3), (1, 1), 'same')(x)
                 x = tf.nn.leaky_relu(x, 0.1)
@@ -446,7 +446,7 @@ class Decomposition_Net_Translation(object):
             x = _conv_block(64, (3, 3), (1, 1))(x)
             feature = _conv_block(32, (3, 3), (1, 1))(x)
             x = tf.reduce_mean(feature, axis=[1, 2])
-            flow1 = tf.layers.dense(x, 2)
+            flow1 = keras.layers.Dense(x, 2)
             flow2 = tf.layers.dense(x, 2)
             flow1 = tf.expand_dims(tf.expand_dims(flow1, 1), 1)
             flow2 = tf.expand_dims(tf.expand_dims(flow2, 1), 1)
