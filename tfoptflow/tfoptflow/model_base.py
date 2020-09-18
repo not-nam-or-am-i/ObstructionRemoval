@@ -116,7 +116,7 @@ class ModelBase:
         if self.mode in ['train_noval', 'train_with_val']:
             self.saver = BestCheckpointSaver(self.opts['ckpt_dir'], self.name, self.opts['max_to_keep'], maximize=False)
         else:
-            self.saver = tf.train.Saver()
+            self.saver = tf.compat.v1.train.Saver()
 
     def save_ckpt(self, ranking_value=0):
         """Save a model checkpoint
