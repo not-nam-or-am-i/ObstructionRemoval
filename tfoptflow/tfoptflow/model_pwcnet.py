@@ -1074,7 +1074,7 @@ class ModelPWCNet(ModelBase):
         # Make the feature pyramids 1-based for better readability down the line
         num_chann = [None, 16, 32, 64, 96, 128, 196]
         c1, c2 = [None], [None]
-        init = tf.keras.initializers.he_normal()
+        init = tf.compat.v1.keras.initializers.he_normal()
         with tf.variable_scope(name):
             for pyr, x, reuse, name in zip([c1, c2], [x_tnsr[:, 0], x_tnsr[:, 1]], [None, True], ['c1', 'c2']):
                 for lvl in range(1, self.opts['pyr_lvls'] + 1):
@@ -1082,11 +1082,11 @@ class ModelPWCNet(ModelBase):
                     # reuse is set to True because we want to learn a single set of weights for the pyramid
                     # kernel_initializer = 'he_normal' or tf.keras.initializers.he_normal(seed=None)
                     f = num_chann[lvl]
-                    x = tf.layers.conv2d(x, f, 3, 2, 'same', kernel_initializer=init, name='conv'+str(lvl)+'a', reuse=reuse)
+                    x = tf.keras.layers.Conv2D(x, f, 3, 2, 'same', kernel_initializer=init, name='conv'+str(lvl)+'a', reuse=reuse)
                     x = tf.nn.leaky_relu(x, alpha=0.1)  # , name=f'relu{lvl+1}a') # default alpha is 0.2 for TF
                     x = tf.layers.conv2d(x, f, 3, 1, 'same', kernel_initializer=init, name='conv'+str(lvl)+'aa', reuse=reuse)
                     x = tf.nn.leaky_relu(x, alpha=0.1)  # , name=f'relu{lvl+1}aa')
-                    x = tf.layers.conv2d(x, f, 3, 1, 'same', kernel_initializer=init, name='conv'+str(lvl)+'b', reuse=reuse)
+                    x = tf.keras.layers.Conv2D(x, f, 3, 1, 'same', kernel_initializer=init, name='conv'+str(lvl)+'b', reuse=reuse)
                     x = tf.nn.leaky_relu(x, alpha=0.1, name=name+str(lvl))
                     pyr.append(x)
         return c1, c2
@@ -1199,7 +1199,7 @@ class ModelPWCNet(ModelBase):
             print('Adding '+op_name+' with input '+x.op.name)
         with tf.variable_scope('upsample'):
             # tf.layers.conv2d_transpose(inputs, filters, kernel_size, strides=(1, 1), padding='valid', ... , name)
-            return tf.layers.conv2d_transpose(x, 2, 4, 2, 'same', name=op_name)
+            return tf.keras.layers.Conv2DTranspose(x, 2, 4, 2, 'same', name=op_name)
 
     ###
     # Cost Volume helpers
