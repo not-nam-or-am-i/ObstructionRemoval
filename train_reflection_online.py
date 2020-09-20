@@ -64,7 +64,7 @@ def _read_image_random_size(filename):
 
 
 def _read_image_random_size_large(filename):
-    image_string = tf.read_file(filename)
+    image_string = tf.io.read_file(filename)
     image_decoded = tf.image.decode_png(image_string, channels=3)
     # image_decoded.set_shape([256, 448, 3])
     return tf.cast(image_decoded, dtype=tf.float32) / 255.0
@@ -151,11 +151,11 @@ def train():
         dataset_online_I2_large = get_online_data_large('tmp/' + FLAGS.training_scene + '*I2.png')
         dataset_online_I3_large = get_online_data_large('tmp/' + FLAGS.training_scene + '*I3.png')
         dataset_online_I4_large = get_online_data_large('tmp/' + FLAGS.training_scene + '*I4.png')
-        batch_online_I0_large = dataset_online_I0_large.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I1_large = dataset_online_I1_large.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I2_large = dataset_online_I2_large.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I3_large = dataset_online_I3_large.batch(FLAGS.batch_size).make_initializable_iterator()
-        batch_online_I4_large = dataset_online_I4_large.batch(FLAGS.batch_size).make_initializable_iterator()
+        batch_online_I0_large = tf.compat.v1.data.make_initializable_iterator(dataset_online_I0_large.batch(FLAGS.batch_size))
+        batch_online_I1_large = tf.compat.v1.data.make_initializable_iterator(dataset_online_I1_large.batch(FLAGS.batch_size))
+        batch_online_I2_large = tf.compat.v1.data.make_initializable_iterator(dataset_online_I2_large.batch(FLAGS.batch_size))
+        batch_online_I3_large = tf.compat.v1.data.make_initializable_iterator(dataset_online_I3_large.batch(FLAGS.batch_size))
+        batch_online_I4_large = tf.compat.v1.data.make_initializable_iterator(dataset_online_I4_large.batch(FLAGS.batch_size))
         fused_frame0_large = batch_online_I0_large.get_next()
         fused_frame1_large = batch_online_I1_large.get_next()
         fused_frame2_large = batch_online_I2_large.get_next()
