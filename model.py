@@ -386,7 +386,7 @@ class Decomposition_Net_Translation(object):
             for l in range(self.lvl):
                 x = tf.compat.v1.layers.Conv2D(self.filters[l], (3, 3), (2, 2), 'same')(x)
                 x = tf.nn.leaky_relu(x, 0.1)
-                x = tf.layers.Conv2D(self.filters[l], (3, 3), (1, 1), 'same')(x)
+                x = tf.compat.v1.layers.Conv2D(self.filters[l], (3, 3), (1, 1), 'same')(x)
                 x = tf.nn.leaky_relu(x, 0.1)
             return x
 
@@ -437,7 +437,7 @@ class Decomposition_Net_Translation(object):
 
             return f
 
-        with tf.variable_scope("TranslationEstimator", reuse=tf.AUTO_REUSE):
+        with tf.compat.v1.variable_scope("TranslationEstimator", reuse=tf.compat.v1.AUTO_REUSE):
             cost = self.CostVolumeLayer(feature_2, feature_0)
             x = tf.concat([feature_2, cost], axis=3)
             x = _conv_block(128, (3, 3), (1, 1))(x)
