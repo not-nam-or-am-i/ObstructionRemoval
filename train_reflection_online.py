@@ -126,7 +126,7 @@ def train():
             data_list_F0 = sorted(glob.glob(path))
             dataset_F0 = tf.data.Dataset.from_tensor_slices(tf.constant(data_list_F0))
             dataset_F0 = dataset_F0.apply(
-                tf.contrib.data.shuffle_and_repeat(buffer_size=21, count=None, seed=6)).map(
+                tf.data.experimental.shuffle_and_repeat(buffer_size=21, count=None, seed=6)).map(
                 _read_image_random_size_large)
             dataset_F0 = dataset_F0.prefetch(16)
             return dataset_F0
