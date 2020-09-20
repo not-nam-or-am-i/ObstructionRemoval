@@ -431,7 +431,7 @@ class Decomposition_Net_Translation(object):
     def TranslationEstimator(self, feature_2, feature_0):
         def _conv_block(filters, kernel_size=(3, 3), strides=(1, 1)):
             def f(x):
-                x = tf.layers.Conv2D(filters, kernel_size, strides, 'valid')(x)
+                x = tf.compat.v1.layers.Conv2D(filters, kernel_size, strides, 'valid')(x)
                 x = tf.nn.leaky_relu(x, 0.2)
                 return x
 
